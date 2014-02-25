@@ -1,6 +1,5 @@
 package net 
 {
-	import air.update.events.DownloadErrorEvent;
 	import flash.errors.IOError;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
@@ -60,13 +59,16 @@ package net
 		}
 		
 		private function connectSucc(event:Event):void {
-			var str:String = "hello server!";
-			_socket.writeByte(str.length);
-			_socket.writeUTFBytes(str);
-			_socket.flush();
+			//var str:String = "hello server!";
+			//_socket.writeByte(str.length);
+			//_socket.writeUTFBytes(str);
+			//_socket.flush();
+			trace("connect server success");
+			this.sendPackage(new SocketPackage( {name:"login", un:"alex",psw:"1234" } ));
 		}
 		
 		private function socketClose(event:Event):void {
+			trace("socket close");
 			if (this._socket.connected) {
 				this._socket.close();
 			}
@@ -84,15 +86,22 @@ package net
 		private function onSocketData(event:ProgressEvent):void {
 			try 
 			{
-				while(_socket.bytesAvailable) {
+				trace("byteTotal", event.bytesLoaded);
+				while (_socket.bytesAvailable) {
+					
 					var dataLen:int = _socket.readInt();
+					trace("dataLen", dataLen);
 					var pack:SocketPackage = new SocketPackage();
-					pack.data = SocketPackage.encodeData(_socket.readUTFBytes(dataLen));
+					//pack.data = 
+					trace("data", SocketPackage.encodeData(_socket.readUTFBytes(event.bytesTotal-4)));
+					//trace(pack.data);
+					handlerPackage(pack);
 				}
+				
 			} 
 			catch (err:Error) 
 			{
-				trace(err);
+				trace("socket data",err);
 				_socket.close();
 				_socket = null;
 			}
@@ -103,6 +112,14 @@ package net
 			_socket.writeInt(dataStr.length);
 			_socket.writeUTFBytes(dataStr);
 			_socket.flush();
+		}
+		
+		private function handlerPackage(pack:SocketPackage):void {
+			switch(pack.data.name) {
+				case "login_rep":
+					trace("receive login reponse", pack.data.id);
+					break;
+			}
 		}
 	}
 

@@ -15,6 +15,7 @@ package
 	import flash.sensors.Accelerometer;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
+	import net.SocketManager;
 	import ui.ControllUI;
 	import util.OrderConst;
 	import util.Stats;
@@ -121,6 +122,8 @@ package
 			this.addChild(new ControllUI());
 			
 			this.addChild(new Stats());
+			
+			SocketManager.instance.connectToServer();
 		}
 		
 	}

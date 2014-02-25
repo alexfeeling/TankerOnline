@@ -12,7 +12,7 @@ package net
 		public var data:Object;
 		
 		
-		public function SocketPackage(vData:Object) 
+		public function SocketPackage(vData:Object = null) 
 		{
 			//if (vName) {
 				//name = vName;
