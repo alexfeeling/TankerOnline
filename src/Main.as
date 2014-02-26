@@ -45,7 +45,8 @@ package
 			// entry point
 			
 			// new to AIR? please read *carefully* the readme.txt files!
-			init();
+			//init();
+			SocketManager.instance.connectToServer();
 		}
 		
 		private function deactivate(e:Event):void 
@@ -122,8 +123,6 @@ package
 			this.addChild(new ControllUI());
 			
 			this.addChild(new Stats());
-			
-			SocketManager.instance.connectToServer();
 		}
 		
 	}
