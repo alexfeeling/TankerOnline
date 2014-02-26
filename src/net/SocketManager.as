@@ -6,6 +6,9 @@ package net
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	import flash.html.script.Package;
+	import flash.net.NetConnection;
+	import flash.net.NetGroup;
 	import flash.net.Socket;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;
@@ -19,8 +22,8 @@ package net
 	{
 		
 		//alexfeeling.wicp.net:18483
-		private static const SERVER_HOST:String = "192.168.1.192"; // "alexfeeling.wicp.net";
-		private static const SERVER_PORT:int = 61345; // 18483;
+		private static const SERVER_HOST:String = "alexfeeling.wicp.net";
+		private static const SERVER_PORT:int = 18483;
 		
 		private var _socket:Socket;
 		
@@ -43,9 +46,9 @@ package net
 			return _instance;
 		}
 		
-		public static function sendDataToServer(data:Object):void
+		public static function sendDataToServer(pack:SocketPackage):void
 		{
-			instance.sendPackage(new SocketPackage("",data));
+			instance.sendPackage(pack);
 		}
 		
 		public function connectToServer():void
@@ -74,7 +77,13 @@ package net
 		private function connectSucc(event:Event):void
 		{
 			trace("connect server success");
-			this.sendPackage(new SocketPackage("",{name: "login", un: "alex", psw: "1234"}));
+			var pack:SocketPackage = new SocketPackage();
+			pack.code = PackageConst.LOGIN_CODE;
+			pack.data = [];
+			pack.data[PackageConst.LOGIN_REQ_USERNAME] = "alex";
+			pack.data[PackageConst.LOGIN_REQ_PASSWORD] = "1234";
+
+			sendDataToServer(pack);
 		}
 		
 		private function socketClose(event:Event):void
@@ -108,7 +117,7 @@ package net
 					var pack:SocketPackage = new SocketPackage();
 					pack.code = code;
 					pack.setDataByStr(_socket.readUTFBytes(dataLen));
-					dealPackage(pack);
+					this.dealPackage(pack);
 				}
 			}
 			catch (err:Error)

@@ -8,8 +8,8 @@ package net
 	public class SocketPackage 
 	{
 		
-		public var data:Array;
 		public var code:int;
+		public var data:Array;
 		
 		public function SocketPackage() 
 		{
@@ -32,6 +32,20 @@ package net
 				//resultList.push(key + "=" + vData[key]);
 			//}
 			//return resultList.join("&");
+			//var ba:ByteArray = new ByteArray();
+			//for (var i:int = 0; i < vData.length; i++) {
+				//if (vData[i] is int) {
+					//ba.writeByte(1);
+					//ba.writeShort(vData[i]);
+				//} else if (vData[i] is Number) {
+					//ba.writeByte(2);
+					//ba.writeFloat(vData[i] as Number);
+				//} else if (vData[i] is String) {
+					//ba.writeByte(3);
+					//ba.writeUTF(vData[i] as String);
+				//}
+			//}
+			//return ba;
 			return vData.join(",");
 		}
 		

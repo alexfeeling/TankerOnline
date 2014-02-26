@@ -27,10 +27,18 @@ package util
 		public static const MOVE_CODE:int = 2;
 		public static const MOVE_REQ_X:int = 0;
 		public static const MOVE_REQ_Y:int = 1;
+		public static const MOVE_REQ_ROTATION:int = 2;
 		
-		public static const TURN_CODE:int = 3;
-		public static const TURN_REQ_ANGLE:int = 0;		
+		//public static const TURN_CODE:int = 3;
+		//public static const TURN_REQ_X:int = 0;		
+		//public static const TURN_REQ_Y:int = 1;		
+		//public static const TURN_REQ_ROTATION:int = 2;		
 		
+		public static const MOVE_BOARDCAST_CODE:int = 3;
+		public static const MOVE_BOARDCAST_TANK_ID:int = 0;
+		public static const MOVE_BOARDCAST_X:int = 0;
+		public static const MOVE_BOARDCAST_Y:int = 0;
+		public static const MOVE_BOARDCAST_ROTATION:int = 0;
 		
 	}
 

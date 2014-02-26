@@ -45,7 +45,7 @@ package
 			// entry point
 			
 			// new to AIR? please read *carefully* the readme.txt files!
-			//init();
+			init();
 			SocketManager.instance.connectToServer();
 		}
 		
@@ -123,6 +123,7 @@ package
 			this.addChild(new ControllUI());
 			
 			this.addChild(new Stats());
+			//this.addChild(new DatagramSocketExample());
 		}
 		
 	}
