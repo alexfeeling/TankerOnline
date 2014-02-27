@@ -1,12 +1,14 @@
 package net
 {
 	import flash.errors.IOError;
+	import flash.events.DatagramSocketDataEvent;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
 	import flash.html.script.Package;
+	import flash.net.DatagramSocket;
 	import flash.net.NetConnection;
 	import flash.net.NetGroup;
 	import flash.net.Socket;
@@ -74,9 +76,12 @@ package net
 			}
 		}
 		
+		private var _udp:DatagramSocket;
 		private function connectSucc(event:Event):void
 		{
-			trace("connect server success");
+			trace("connect server success")
+			trace("local", _socket.localAddress, _socket.localPort);
+			trace("remote", _socket.remoteAddress, _socket.remotePort);
 			var pack:SocketPackage = new SocketPackage();
 			pack.code = PackageConst.LOGIN_CODE;
 			pack.data = [];
@@ -84,6 +89,15 @@ package net
 			pack.data[PackageConst.LOGIN_REQ_PASSWORD] = "1234";
 
 			sendDataToServer(pack);
+			_udp = new DatagramSocket();
+			_udp.bind(_socket.localPort, _socket.localAddress);
+			_udp.addEventListener(DatagramSocketDataEvent.DATA, onUdpData);
+			_udp.receive();
+		}
+		
+		private function onUdpData(evt:DatagramSocketDataEvent):void {
+			var ba:ByteArray = evt.data;
+			trace("receive udp", ba.readUTFBytes(ba.length));
 		}
 		
 		private function socketClose(event:Event):void
@@ -145,6 +159,17 @@ package net
 			{
 				case PackageConst.LOGIN_CODE: 
 					trace("receive login response", pack.data[PackageConst.LOGIN_REP_RESULT]);
+					break;
+				case 100://udp测试
+					var port:int = parseInt(String(pack.data[0]));
+					var address:String = String(pack.data[1]);
+					trace("a other client connect", port, address);
+					if (_udp) {
+						trace("send udp start");
+						var ba:ByteArray = new ByteArray();
+						ba.writeUTFBytes("hello!I'm a client");
+						_udp.send(ba, 0, ba.length, address, port);
+					}
 					break;
 			}
 		}
