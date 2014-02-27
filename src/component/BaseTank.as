@@ -244,9 +244,9 @@ package component
 				}
 			}
 			if (this._isBarrelTurnLeft) {
-				this.barrel.rotation -= 1;// Math.PI / 3;
+				this.barrel.rotation -= 1;
 			} else if (this._isBarrelTurnRight) {
-				this.barrel.rotation += 1;// Math.PI / 3;
+				this.barrel.rotation += 1;
 			}
 		}
 	

@@ -8,6 +8,8 @@ package component
 	public class RedTank extends BaseTank 
 	{
 		
+		private var _recordTime:Number = 0;
+		
 		public function RedTank(vId:String) 
 		{
 			super(vId);
@@ -29,6 +31,10 @@ package component
 			
 			this._speed = 2;
 			this._turnSpeed = 2;
+		}
+		
+		public function receiveOperation(type:int):void {
+			
 		}
 		
 	}

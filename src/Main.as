@@ -29,15 +29,11 @@ package
 		
 		public var world:World;
 		
-		//public static var STAGE_WIDTH:int = 0;
-		//public static var STAGE_HEIGHT:int = 0;
-		
 		public function Main():void 
 		{
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.DEACTIVATE, deactivate);
-			//stage.addEventListener(Event.ACTIVATE, init);
 			
 			// touch or gesture?
 			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
@@ -57,57 +53,10 @@ package
 		}
 		
 		private function init():void {
-			//STAGE_WIDTH = stage.fullScreenWidth;
-			//STAGE_HEIGHT = stage.fullScreenHeight;
 			World.STAGE_WIDTH = stage.fullScreenWidth;
 			World.STAGE_HEIGHT = stage.fullScreenHeight;
 			world = new World();
 			this.addChild(world);
-			//var btnSp:Sprite = new Sprite();
-			//btnSp.graphics.beginFill(0xffcc00, 0.5);
-			//btnSp.graphics.drawRect(0, 0, 200, 200);
-			//btnSp.graphics.endFill();
-			//btnSp.x = 0;
-			//btnSp.y = stage.fullScreenHeight - 200;
-			//this.stage.addChild(btnSp);
-			//btnSp.addEventListener(TouchEvent.TOUCH_BEGIN, function onTouchBegin(evt:TouchEvent):void { 
-				//Commander.sendOrder(OrderConst.KEY_UP_PRESSING);
-			//} );
-			//btnSp.addEventListener(TouchEvent.TOUCH_ROLL_OUT, function onTouchRollOut(evt:TouchEvent):void {
-				//Commander.sendOrder(OrderConst.KEY_UP_RELEASE);
-			//});
-			//btnSp.addEventListener(TouchEvent.TOUCH_END, function onTouchEnd(evt:TouchEvent):void { 
-				//Commander.sendOrder(OrderConst.KEY_UP_RELEASE);
-			//} );
-			//
-			//btnSp = new Sprite();
-			//btnSp.graphics.beginFill(0x0000ff, 0.5);
-			//btnSp.graphics.drawRect(0, 0, 200, 200);
-			//btnSp.graphics.endFill();
-			//btnSp.x = 200;
-			//btnSp.y = stage.fullScreenHeight - 200;
-			//this.stage.addChild(btnSp);
-			//btnSp.addEventListener(TouchEvent.TOUCH_BEGIN, function(evt:TouchEvent):void { 
-				//Commander.sendOrder(OrderConst.KEY_DOWN_PRESSING);
-			//});
-			//btnSp.addEventListener(TouchEvent.TOUCH_ROLL_OUT, function(evt:TouchEvent):void {
-				//Commander.sendOrder(OrderConst.KEY_DOWN_RELEASE);
-			//});
-			//btnSp.addEventListener(TouchEvent.TOUCH_END, function(evt:TouchEvent):void { 
-				//Commander.sendOrder(OrderConst.KEY_DOWN_RELEASE);
-			//} );
-			//
-			//btnSp = new Sprite();
-			//btnSp.graphics.beginFill(0xff0000, 0.5);
-			//btnSp.graphics.drawRect(0, 0, 200, 200);
-			//btnSp.graphics.endFill();
-			//btnSp.x = stage.fullScreenWidth - 200;
-			//btnSp.y = stage.fullScreenHeight - 200;
-			//this.stage.addChild(btnSp);
-			//btnSp.addEventListener(TouchEvent.TOUCH_BEGIN, function onTouchBegin(evt:TouchEvent):void { 
-					//Commander.sendOrder(OrderConst.BARREL_FIRE);
-				//} );
-			//
 			var btnSp:Sprite = new Sprite();
 			btnSp.graphics.beginFill(0xff0000, 0.5);
 			btnSp.graphics.drawRect(0, 0, 100, 100);
