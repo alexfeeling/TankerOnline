@@ -42,7 +42,7 @@ package
 			
 			// new to AIR? please read *carefully* the readme.txt files!
 			init();
-			SocketManager.instance.connectToServer();
+			//SocketManager.instance.connectToServer();
 		}
 		
 		private function deactivate(e:Event):void 

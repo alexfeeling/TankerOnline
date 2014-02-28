@@ -1,5 +1,6 @@
 package component 
 {
+	import flash.display.DisplayObject;
 	
 	/**
 	 * ...
@@ -8,8 +9,16 @@ package component
 	public interface IComponent 
 	{
 		
-		function getId():String;
-		function setId(vId:String):void;
+		function get id():String;
+		function set id(vId:String):void;
+		
+		function get mapX():Number;
+		function set mapX(value:Number):void;
+		
+		function get mapY():Number;
+		function set mapY(value:Number):void;
+		
+		function get world():World;
 		
 	}
 	

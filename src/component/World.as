@@ -6,6 +6,7 @@ package component
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.geom.Point;
+	import flash.utils.Dictionary;
 	
 	/**
 	 * ...
@@ -17,33 +18,56 @@ package component
 		public static var STAGE_WIDTH:int = 0;
 		public static var STAGE_HEIGHT:int = 0;
 		
+		public static var GRID_WIDTH:int = 100;
+		public static var GRID_HEIGHT:int = 100;
+		
 		private static const COMMAND_HANDLER_NAME:String = "world";
 		
 		private var _map:Map;
 		
-		private var _allComponents:Vector.<IComponent>;
-		private var _controllingTank:ControlledTank;
+		private var _allComponents:Vector.<BaseComponent>;
+		public var controllingTank:ControlledTank;
 		
 		private var _angleSpeed:Number = 2;
 		
+		private var _allGrids:Dictionary;
+		
 		public function World() 
 		{
+			if (_instance) {
+				throw "error";
+			}
+			_instance = this;
 			init();
 			AnimationManager.getInstance().addToAnimation(this);
 		}
 		
+		private static var _instance:World;
+		public static function get instance():World {
+			if (_instance) return _instance;
+			_instance = new World();
+			return _instance;
+		}
+		
 		private function init():void {
-			_allComponents = new Vector.<IComponent>();
+			_allComponents = new Vector.<BaseComponent>();
+			_allGrids = new Dictionary();
+			controllingTank = new ControlledTank("tank_1");
+			controllingTank.x = 0;
+			controllingTank.y = 0;
+			controllingTank.mapX = 100;
+			controllingTank.mapY = 100;
+			this.addComponent(controllingTank);
 			
-			_controllingTank = new ControlledTank("tank_1");
-			_controllingTank.x = 450;
-			_controllingTank.y = 300;
-			this.addChild(_controllingTank);
-			var pos:Point = this.localToGlobal(new Point(_controllingTank.x, _controllingTank.y));
-			this.x = (World.STAGE_WIDTH >> 1) - pos.x;
-			this.y = (World.STAGE_HEIGHT >> 1) - pos.y;
+			//var pos:Point = this.localToGlobal(new Point(controllingTank.x, controllingTank.y));
+			this.x = (World.STAGE_WIDTH >> 1);// - pos.x;
+			this.y = World.STAGE_HEIGHT - 200;
 			
-			this.addChild(new RedTank("red"));
+			var redTank:RedTank = new RedTank("red");
+			redTank.mapX = 0;
+			redTank.mapY = 0;
+			redTank.refreshXY();
+			this.addComponent(redTank);
 		}
 		
 		public function setMap(map:Map):void {
@@ -52,11 +76,41 @@ package component
 			this.setChildIndex(map, 0);
 		}
 		
-		public function addComponent(component:IComponent):void {
-			_allComponents.push(component);
-			this.addChild(component as DisplayObject);
+		private var _emptyIdx:Array = [];
+		public function addComponent(cpn:BaseComponent):Boolean {
+			var gridX:int = int(cpn.mapX / GRID_WIDTH);
+			var gridY:int = int(cpn.mapY / GRID_HEIGHT);
+			var key:String = gridX + "-" + gridY;
+			if (_allGrids[key] != null) {
+				return false;
+			}
+			_allGrids[key] = cpn;
+			if (_emptyIdx.length > 0) {
+				_allComponents[_emptyIdx.pop()] = cpn;
+			} else {
+				_allComponents.push(cpn);
+			}
+			this.addChild(cpn);
+			return true;
 		}
 		
+		public function removeComponent(cpn:BaseComponent):Boolean {
+			var gridX:int = int(cpn.mapX / GRID_WIDTH);
+			var gridY:int = int(cpn.mapY / GRID_HEIGHT);
+			var key:String = gridX + "-" + gridY;
+			if (_allGrids[key] == null) {
+				return false;
+			}
+			_allGrids[key] = null;
+			delete _allGrids[key];
+			this.removeChild(cpn);
+			var idx:int = _allComponents.indexOf(cpn);
+			if (idx >= 0) {
+				_allComponents[idx] = null;
+				_emptyIdx.push(idx);
+			}
+			return true;
+		}
 		
 		/* INTERFACE com.alex.pattern.IOrderExecutor */
 		
@@ -89,13 +143,21 @@ package component
 		
 		public function gotoNextFrame(passedTime:Number):void 
 		{
-			if (this.rotation != -_controllingTank.rotation) {
-				if (Math.abs(this.rotation + _controllingTank.rotation) < 1) {
-					this.rotation = -_controllingTank.rotation;
+			for (var i:int = 0; i < _allComponents.length; i++) {
+				if (_allComponents[i] != null) {
+					_allComponents[i].gotoNextFrame(passedTime);
+					if (i > 0) {//i==0时是controllingTank
+						_allComponents[i].refreshXY();
+					}
+				}
+			}
+			if (this.rotation != -controllingTank.rotation) {
+				if (Math.abs(this.rotation + controllingTank.rotation) < 1) {
+					this.rotation = -controllingTank.rotation;
 				} else {
-					if ((this.rotation + _controllingTank.rotation + 360) % 360 > 180) 
+					if ((this.rotation + controllingTank.rotation + 360) % 360 > 180) 
 					{
-						var turnAngle:Number = (( -_controllingTank.rotation - this.rotation + 360) % 360);
+						var turnAngle:Number = (( -controllingTank.rotation - this.rotation + 360) % 360);
 						if (turnAngle > 30) {
 							this.rotation += turnAngle - 30;
 						} else {
@@ -103,7 +165,7 @@ package component
 						}
 						//this.rotation += turnAngle / 4;
 					} else {
-						turnAngle = ((this.rotation + _controllingTank.rotation + 360) % 360);
+						turnAngle = ((this.rotation + controllingTank.rotation + 360) % 360);
 						if (turnAngle > 30) {
 							this.rotation -= turnAngle - 30;
 						} else {
@@ -111,11 +173,7 @@ package component
 						}
 						//this.rotation -= turnAngle / 4;
 					}
-					//trace("turnAngle", turnAngle);
 				}
-				var gpos:Point = this.localToGlobal(new Point(_controllingTank.x, _controllingTank.y));
-				this.x += (World.STAGE_WIDTH >> 1) - gpos.x;
-				this.y += (World.STAGE_HEIGHT >> 1) - gpos.y;
 			}
 		}
 		

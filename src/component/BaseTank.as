@@ -14,11 +14,9 @@ package component
 	 * ...
 	 * @author alex
 	 */
-	public class BaseTank extends Sprite implements IComponent, IOrderExecutor, IAnimation
+	public class BaseTank extends BaseComponent implements IOrderExecutor
 	{
 		
-		protected var _id:String;
-		//protected var _ui:Sprite;
 		protected var _speed:Number = 0;
 		protected var _turnSpeed:Number = 0;
 		protected var _turnG:Number = 1;
@@ -45,12 +43,14 @@ package component
 		protected var _isBarrelTurnLeft:Boolean = false;
 		protected var _isBarrelTurnRight:Boolean = false;
 		
+		private var _mapX:Number = 0;
+		private var _mapY:Number = 0;
+		
 		public function BaseTank(vId:String)
 		{
-			this.setId(vId);
+			this.id = vId;
 			this.init();
 			Commander.registerExecutor(this);
-			AnimationManager.getInstance().addToAnimation(this);
 		}
 		
 		protected function init():void
@@ -69,21 +69,8 @@ package component
 			}
 			var moveX:Number = Math.sin(this.rotation * Math.PI / 180) * distance;
 			var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
-			this.x += moveX;
-			this.y -= moveY;
-			var orginPos:Point = new Point(this.x, this.y);
-			var gpos:Point = this.parent.localToGlobal(orginPos);
-			//this.parent.x = (Main.STAGE_WIDTH >> 1) - gpos.x+this.parent.x;
-			//this.parent.y = (Main.STAGE_HEIGHT >> 1) - gpos.y + this.parent.y;
-			
-			//var a:Number = Math.atan2(this.y, this.x);
-			//var l:Number = this.x / Math.cos(a);
-			//var newX:Number = l * Math.cos(a + this.parent.rotation * Math.PI / 180);
-			//var newY:Number = l * Math.sin(a + this.parent.rotation * Math.PI / 180);
-			//this.parent.x = int((Main.STAGE_WIDTH >> 1) - newX);
-			//this.parent.y = int((Main.STAGE_HEIGHT >> 1) - newY);
-			this.parent.x = (World.STAGE_WIDTH >> 1) - gpos.x + this.parent.x;
-			this.parent.y = (World.STAGE_HEIGHT >> 1) - gpos.y + this.parent.y;
+			this.mapX += moveX;
+			this.mapY -= moveY;
 		}
 		
 		public function moveBack(passedTime:Number = -1):void
@@ -97,11 +84,8 @@ package component
 			}
 			var moveX:Number = Math.sin(this.rotation * Math.PI / 180) * distance;
 			var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
-			this.x -= moveX;
-			this.y += moveY;
-			var gpos:Point = this.parent.localToGlobal(new Point(this.x, this.y));
-			this.parent.x = (World.STAGE_WIDTH >> 1) - gpos.x + this.parent.x;
-			this.parent.y = (World.STAGE_HEIGHT >> 1) - gpos.y + this.parent.y;
+			this.mapX -= moveX;
+			this.mapY += moveY;
 			
 		}
 		
@@ -115,19 +99,6 @@ package component
 				return;
 			}
 			this.rotation -= degree;
-			//this.parent.rotation = -this.rotation;
-			//var a:Number = Math.atan2(this.y, this.x);
-			//var l:Number = Math.sqrt(this.x * this.x + this.y * this.y);// this.x / Math.cos(a);
-			//var newX:Number = l * Math.cos(a + this.parent.rotation * Math.PI / 180);
-			//var newY:Number = l * Math.sin(a + this.parent.rotation * Math.PI / 180);
-			//this.parent.x = (Main.STAGE_WIDTH >> 1) - newX;
-			//this.parent.y = (Main.STAGE_HEIGHT >> 1) - newY;
-			var gpos:Point = this.parent.localToGlobal(new Point(this.x, this.y));
-			//trace(newX - gpos.x + this.parent.x, newY - gpos.y + this.parent.y);
-			this.parent.x += (World.STAGE_WIDTH >> 1) - gpos.x;
-			this.parent.y += (World.STAGE_HEIGHT >> 1) - gpos.y;
-			
-			
 		}
 		
 		public function turnRight(passedTime:Number):void
@@ -140,22 +111,6 @@ package component
 				return;
 			}
 			this.rotation += degree;
-			//this.parent.rotation = -this.rotation;// -= degree;
-			var gpos:Point = this.parent.localToGlobal(new Point(this.x, this.y));
-			this.parent.x = (World.STAGE_WIDTH >> 1) - gpos.x + this.parent.x;
-			this.parent.y = (World.STAGE_HEIGHT >> 1) - gpos.y + this.parent.y;
-		}
-		
-		//实现接口的方法
-		public function getId():String
-		{
-			return this._id;
-		}
-		
-		public function setId(vId:String):void
-		{
-			this._id = getQualifiedClassName(this) + vId;
-			this.name = this._id;
 		}
 		
 		public function dispose():void {
@@ -180,22 +135,10 @@ package component
 		
 		public function getExecutorId():String 
 		{
-			return this._id;
+			return this.id;
 		}
 		
-		/* INTERFACE animation.IAnimation */
-		
-		public function isPause():Boolean 
-		{
-			return false;
-		}
-		
-		public function isPlayEnd():Boolean 
-		{
-			return false;
-		}
-		
-		public function gotoNextFrame(passedTime:Number):void 
+		override public function gotoNextFrame(passedTime:Number):void 
 		{
 			if (_isUpPressing) {
 				this.moveForward(passedTime);
@@ -249,7 +192,7 @@ package component
 				this.barrel.rotation += 1;
 			}
 		}
-	
+		
 	}
 
 }

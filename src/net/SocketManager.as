@@ -80,8 +80,8 @@ package net
 		private function connectSucc(event:Event):void
 		{
 			trace("connect server success")
-			trace("local", _socket.localAddress, _socket.localPort);
-			trace("remote", _socket.remoteAddress, _socket.remotePort);
+			//trace("local", _socket.localAddress, _socket.localPort);
+			//trace("remote", _socket.remoteAddress, _socket.remotePort);
 			var pack:SocketPackage = new SocketPackage();
 			pack.code = PackageConst.LOGIN_CODE;
 			pack.data = [];
