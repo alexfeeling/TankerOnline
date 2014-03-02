@@ -37,6 +37,10 @@ package component
 			this._turnSpeed = 1;
 		}
 		
+		public function turning():Boolean {
+			return this._isLeftPressing || this._isRightPressing;
+		}
+		
 		override public function getExecuteOrderList():Array {
 			return [
 							OrderConst.KEY_UP_PRESSING,
@@ -97,8 +101,9 @@ package component
 					var rot:Number = this.rotation + this.barrel.rotation;
 					var bx:Number = Math.sin(rot * Math.PI / 180) * 50;
 					var by:Number = Math.cos(rot * Math.PI / 180) * 50;
-					var bullet:Bullet = new Bullet(this.x + bx, this.y -by, rot);
-					this.parent.addChild(bullet);
+					var bullet:Bullet = new Bullet(this.mapX + bx, this.mapY -by, rot);
+					bullet.owner = this;
+					world.addComponent(bullet);
 					break;
 				case OrderConst.BARREL_TURN_LEFT:
 					if (orderParam) {

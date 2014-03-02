@@ -6,6 +6,7 @@ package
 	import controll.Controller;
 	import flash.desktop.NativeApplication;
 	import flash.display.Shape;
+	import flash.display3D.VertexBuffer3D;
 	import flash.events.Event;
 	import flash.display.Sprite;
 	import flash.display.StageAlign;
@@ -13,8 +14,10 @@ package
 	import flash.events.TouchEvent;
 	import flash.geom.Point;
 	import flash.sensors.Accelerometer;
+	import flash.system.System;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
+	import map.WorldMap;
 	import net.SocketManager;
 	import ui.ControllUI;
 	import util.OrderConst;
@@ -49,7 +52,7 @@ package
 		{
 			// make sure the app behaves well (or exits) when in background
 			//NativeApplication.nativeApplication.exit();
-			
+			//System.exit(0);
 		}
 		
 		private function init():void {
@@ -57,20 +60,10 @@ package
 			World.STAGE_HEIGHT = stage.fullScreenHeight;
 			world = new World();
 			this.addChild(world);
-			var btnSp:Sprite = new Sprite();
-			btnSp.graphics.beginFill(0xff0000, 0.5);
-			btnSp.graphics.drawRect(0, 0, 100, 100);
-			btnSp.graphics.drawRect(0, 300, 70, 70);
-			btnSp.graphics.drawRect(100, 300, 60, 60);
-			btnSp.graphics.drawRect(200, 400, 100, 50);
-			btnSp.graphics.endFill();
-			btnSp.x = 200;
-			btnSp.y = 200;
-			world.addChild(btnSp);
-			
 			new Controller(stage);
 			this.addChild(new ControllUI());
 			
+			//this.addChild(new WorldMap());
 			this.addChild(new Stats());
 			//this.addChild(new DatagramSocketExample());
 		}

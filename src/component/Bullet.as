@@ -10,40 +10,48 @@ package component
 	 * ...
 	 * @author alexfeeling
 	 */
-	public class Bullet extends Sprite implements IAnimation
+	public class Bullet extends BaseComponent implements IAnimation
 	{
 		
-		private var _speed:int = 5;
+		private var _speed:int = 3;
+		
+		public var owner:BaseComponent;
 		
 		public function Bullet(bx:int, by:int, angle:Number) 
 		{
+			this.id = "bul";
 			var shape:Shape = new Shape();
 			shape.graphics.beginFill(0xff0000);
 			shape.graphics.drawCircle(0, 0, 10);
 			shape.graphics.endFill();
 			this.addChild(shape);
-			this.x = bx;
-			this.y = by;
+			this.mapX = bx;
+			this.mapY = by;
 			this.rotation = angle;
-			AnimationManager.getInstance().addToAnimation(this);
+			moveDir = 1;
+			this.solid = false;
 		}
 		
-		public function isPause():Boolean {
-			return false;
-		}
+		//override public function isPlayEnd():Boolean {
+			//var pos:Point = this.parent.localToGlobal(new Point(this.x, this.y));
+			//if (Math.abs(pos.x) > World.STAGE_WIDTH || Math.abs(pos.y) > World.STAGE_HEIGHT) 
+			//{
+				//this.parent.removeChild(this);
+				//return true;
+			//}
+			//return false;
+		//}
 		
-		public function isPlayEnd():Boolean {
-			var pos:Point = this.parent.localToGlobal(new Point(this.x, this.y));
-			if (pos.x < 0 || pos.x > World.STAGE_WIDTH || 
-				pos.y < 0 || pos.y > World.STAGE_HEIGHT) 
+		override public function refreshXY():void 
+		{
+			super.refreshXY();
+			if (Math.abs(this.x) > World.STAGE_WIDTH || Math.abs(this.y) > World.STAGE_HEIGHT)
 			{
-				this.parent.removeChild(this);
-				return true;
+				this.world.removeComponent(this);
 			}
-			return false;
 		}
 		
-		public function gotoNextFrame(passedTime:Number):void {
+		override public function gotoNextFrame(passedTime:Number):void {
 			if (passedTime == -1) {
 				var distance:Number = this._speed;
 			} else if (passedTime > 0) {
@@ -51,10 +59,20 @@ package component
 			} else {
 				return;
 			}
+			
 			var moveX:Number = Math.sin(this.rotation * Math.PI / 180) * distance;
 			var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
-			this.x += moveX;
-			this.y -= moveY;
+			this.mapX += moveX;
+			this.mapY -= moveY;
+			if (mapX != oldMapX || mapY != oldMapY) {
+				var hitCpn:BaseComponent = world.componentMove(this);
+				if (hitCpn && hitCpn != this.owner) {
+					this.mapX = this.oldMapX;
+					this.mapY = this.oldMapY;
+					hitCpn.hitedBy(this);
+					world.removeComponent(this);
+				}
+			}
 			
 		}
 		

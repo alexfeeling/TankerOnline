@@ -17,6 +17,8 @@ package component
 	public class BaseTank extends BaseComponent implements IOrderExecutor
 	{
 		
+		public var blood:int = 100;
+		
 		protected var _speed:Number = 0;
 		protected var _turnSpeed:Number = 0;
 		protected var _turnG:Number = 1;
@@ -86,7 +88,6 @@ package component
 			var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
 			this.mapX -= moveX;
 			this.mapY += moveY;
-			
 		}
 		
 		public function turnLeft(passedTime:Number):void
@@ -141,9 +142,13 @@ package component
 		override public function gotoNextFrame(passedTime:Number):void 
 		{
 			if (_isUpPressing) {
+				moveDir = 1;
 				this.moveForward(passedTime);
 			} else if (_isDownPressing) {
 				this.moveBack(passedTime);
+				moveDir = -1;
+			} else {
+				moveDir = 0;
 			}
 			
 			if (_isLeftPressing) {
@@ -190,6 +195,13 @@ package component
 				this.barrel.rotation -= 1;
 			} else if (this._isBarrelTurnRight) {
 				this.barrel.rotation += 1;
+			}
+			if (mapX != oldMapX || mapY != oldMapY) {
+				var hitCpn:BaseComponent = world.componentMove(this);
+				if (hitCpn) {
+					this.mapX = this.oldMapX;
+					this.mapY = this.oldMapY;
+				}
 			}
 		}
 		

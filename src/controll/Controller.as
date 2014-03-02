@@ -49,6 +49,15 @@ package controll
 				accelerometer = new Accelerometer();
 				accelerometer.addEventListener(AccelerometerEvent.UPDATE, onAcceleUpdate);
 			}
+			_instance = this;
+		}
+		
+		private static var _instance:Controller;
+		public static function get instance():Controller {
+			if (_instance) {
+				return _instance;
+			}
+			return null;
 		}
 		
 		private function onTouchBegin(evt:TouchEvent):void {
@@ -67,13 +76,16 @@ package controll
 			}
 		}
 		
+		public var accX:Number = 0;
 		private function onAcceleUpdate(evt:AccelerometerEvent):void {
-			if (Math.abs(evt.accelerationX) >= 0.1) {
-				if (evt.accelerationX >= 0.1) {
-					Commander.sendOrder(OrderConst.KEY_LEFT_PRESSING, Math.min(1, Math.abs(evt.accelerationX)*3));
+			if (Math.abs(evt.accelerationX) > 0) {
+				if (evt.accelerationX > 0) {
+					Commander.sendOrder(OrderConst.KEY_LEFT_PRESSING, Math.min(1, Math.abs(evt.accelerationX)));
 				} else {
-					Commander.sendOrder(OrderConst.KEY_RIGHT_PRESSING, Math.min(1, Math.abs(evt.accelerationX)*3));
+					Commander.sendOrder(OrderConst.KEY_RIGHT_PRESSING, Math.min(1, Math.abs(evt.accelerationX)));
 				}
+				accX = evt.accelerationX;
+				trace("accX", accX);
 			} else {
 				Commander.sendOrder(OrderConst.KEY_LEFT_RELEASE);
 				Commander.sendOrder(OrderConst.KEY_RIGHT_RELEASE);

@@ -16,6 +16,16 @@ package component
 		private var _mapY:Number = 0;
 		//private var _world:World;
 		
+		public var gridX:int = 0;
+		public var gridY:int = 0;
+		
+		public var oldMapX:Number = 0;
+		public var oldMapY:Number = 0;
+		
+		public var moveDir:int = 0;
+		
+		public var solid:Boolean = true;
+		
 		public function BaseComponent() 
 		{
 			
@@ -83,6 +93,10 @@ package component
 		public function get world():World 
 		{
 			return World.instance;
+		}
+		
+		public function hitedBy(bul:BaseComponent):void {
+			trace("be hited by " + bul.id);
 		}
 		
 	}
