@@ -26,6 +26,9 @@ package util
 		public static const BARREL_TURN_RIGHT:String = "barrel_turn_right";
 		public static const BARREL_FIRE:String = "barrel_fire";
 		
+		public static const TEXTURE_LOAD_COMPLETE:String = "texture_load_complete";
+		public static const ALL_LOAD_COMPLETE:String = "all_load_complete";
+		
 	}
 
 }

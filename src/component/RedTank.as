@@ -18,16 +18,16 @@ package component
 		override protected function init():void 
 		{
 			super.init();
-			tankMc = new RED_TANK();
-			leftTrack = tankMc["leftTrack"] as MovieClip;
-			rightTrack = tankMc["rightTrack"] as MovieClip;
-			barrel = tankMc["barrel"] as MovieClip;
-			
-			leftTrack.stop();
-			rightTrack.stop();
-			barrel.stop();
-			
-			this.addChild(tankMc);
+			//tankMc = new RED_TANK();
+			//leftTrack = tankMc["leftTrack"] as MovieClip;
+			//rightTrack = tankMc["rightTrack"] as MovieClip;
+			//barrel = tankMc["barrel"] as MovieClip;
+			//
+			//leftTrack.stop();
+			//rightTrack.stop();
+			//barrel.stop();
+			//
+			//this.addChild(tankMc);
 			
 			this._speed = 2;
 			this._turnSpeed = 2;

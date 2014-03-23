@@ -13,12 +13,16 @@ package
 	import flash.display.StageScaleMode;
 	import flash.events.TouchEvent;
 	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.sensors.Accelerometer;
 	import flash.system.System;
 	import flash.ui.Multitouch;
 	import flash.ui.MultitouchInputMode;
+	import game.Game;
+	import game.StarlingGame;
 	import map.WorldMap;
 	import net.SocketManager;
+	import starling.core.Starling;
 	import ui.ControllUI;
 	import util.OrderConst;
 	import util.Stats;
@@ -30,10 +34,10 @@ package
 	public class Main extends Sprite 
 	{
 		
-		public var world:World;
 		
 		public function Main():void 
 		{
+			
 			stage.scaleMode = StageScaleMode.NO_SCALE;
 			stage.align = StageAlign.TOP_LEFT;
 			stage.addEventListener(Event.DEACTIVATE, deactivate);
@@ -58,14 +62,18 @@ package
 		private function init():void {
 			World.STAGE_WIDTH = stage.fullScreenWidth;
 			World.STAGE_HEIGHT = stage.fullScreenHeight;
-			world = new World();
-			this.addChild(world);
+			
 			new Controller(stage);
 			this.addChild(new ControllUI());
 			
 			//this.addChild(new WorldMap());
 			this.addChild(new Stats());
 			//this.addChild(new DatagramSocketExample());
+			
+			var starling:Starling = new Starling(Game, stage, new Rectangle(0, 0, stage.fullScreenWidth, stage.fullScreenHeight));
+			starling.showStatsAt("center");
+			starling.start();
+			
 		}
 		
 		

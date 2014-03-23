@@ -1,8 +1,8 @@
 package component 
 {
-	import animation.IAnimation;
-	import flash.display.DisplayObject;
-	import flash.display.Sprite;
+	import com.alex.animation.IAnimation;
+	import flash.geom.Rectangle;
+	import starling.display.Sprite;
 	
 	/**
 	 * ...
@@ -14,7 +14,6 @@ package component
 		private var _id:String = null;
 		private var _mapX:Number = 0;
 		private var _mapY:Number = 0;
-		//private var _world:World;
 		
 		public var gridX:int = 0;
 		public var gridY:int = 0;
@@ -26,9 +25,18 @@ package component
 		
 		public var solid:Boolean = true;
 		
+		public var leftCpn4RightBd:BaseComponent;
+		public var rightCpn4LeftBd:BaseComponent;
+		public var upCpn4DownBd:BaseComponent;
+		public var downCpn4UpBd:BaseComponent;
+		
 		public function BaseComponent() 
 		{
 			
+		}
+		
+		public function getBoundRect():Rectangle {
+			return bounds;
 		}
 		
 		/* INTERFACE component.IComponent */
@@ -84,11 +92,6 @@ package component
 			this.x = _mapX - world.controllingTank.mapX;
 			this.y = _mapY - world.controllingTank.mapY;
 		}
-		
-		//public function get display():DisplayObject 
-		//{
-			//return this;
-		//}
 		
 		public function get world():World 
 		{

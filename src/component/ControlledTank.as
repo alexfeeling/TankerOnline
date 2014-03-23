@@ -1,10 +1,9 @@
 package component 
 {
-	import animation.AnimationManager;
-	import animation.IAnimation;
 	import com.alex.pattern.Commander;
 	import com.alex.pattern.IOrderExecutor;
-	import flash.display.MovieClip;
+	import starling.textures.TextureAtlas;
+	//import flash.display.MovieClip;
 	import util.OrderConst;
 	
 	/**
@@ -13,28 +12,24 @@ package component
 	 */
 	public class ControlledTank extends BaseTank
 	{
-		
-		public function ControlledTank(vId:String) 
+		public function ControlledTank(vId:String, textureAtlas:TextureAtlas) 
 		{
-			super(vId);
+			super(vId, textureAtlas);
 		}
 		
 		override protected function init():void 
 		{
 			super.init();
-			tankMc = new BLUE_TANK();
-			leftTrack = tankMc["leftTrack"] as MovieClip;
-			rightTrack = tankMc["rightTrack"] as MovieClip;
-			barrel = tankMc["barrel"] as MovieClip;
-			
-			leftTrack.stop();
-			rightTrack.stop();
-			barrel.stop();
-			
-			this.addChild(tankMc);
-			
-			this._speed = 2;
-			this._turnSpeed = 1;
+			thruster.pivotX = 100;
+			thruster.pivotY = 100;
+			body.pivotX = 74;
+			body.pivotY = 85;
+			weapon.pivotX = 64;
+			weapon.pivotY = 185;
+			this.scaleX = 0.5;
+			this.scaleY = 0.5;
+			this._speed = 20;
+			this._turnSpeed = 10;
 		}
 		
 		public function turning():Boolean {
@@ -98,7 +93,7 @@ package component
 				case OrderConst.BARREL_FIRE:
 					if (this._isFiring) break;
 					this._isFiring = true;
-					var rot:Number = this.rotation + this.barrel.rotation;
+					var rot:Number = this.rotation + this.weapon.rotation;
 					var bx:Number = Math.sin(rot * Math.PI / 180) * 50;
 					var by:Number = Math.cos(rot * Math.PI / 180) * 50;
 					var bullet:Bullet = new Bullet(this.mapX + bx, this.mapY -by, rot);
