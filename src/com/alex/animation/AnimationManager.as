@@ -116,7 +116,7 @@ package com.alex.animation
 				{
 					continue;
 				}
-				animation.gotoNextFrame(passedTime);
+				animation.updateTime(passedTime);
 			}
 		}
 	

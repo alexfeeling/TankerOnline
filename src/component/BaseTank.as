@@ -9,6 +9,7 @@ package component
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.MovieClip;
+	import starling.display.Quad;
 	import starling.textures.TextureAtlas;
 	import starling.utils.deg2rad;
 	import util.MoveDirection;
@@ -56,7 +57,7 @@ package component
 		
 		private var _textureAtlas:TextureAtlas;
 		
-		
+		protected var quad:Quad;
 		public function BaseTank(vId:String, textureAtlas:TextureAtlas)
 		{
 			this.id = vId;
@@ -75,17 +76,11 @@ package component
 			this.addChild(thruster);
 			this.addChild(body);
 			this.addChild(weapon);
-		}
-		
-		private var rect:Rectangle;
-		override public function getBoundRect():Rectangle 
-		{
-			if (!rect) {
-				rect = new Rectangle(0, 0, 100, 100);
-			}
-			rect.x = this.mapX - 50;
-			rect.y = this.mapY - 50;
-			return rect;
+			quad = new Quad(200, 200, 0xff0000);
+			quad.pivotX = 100;
+			quad.pivotY = 100;
+			quad.alpha = 0.5;
+			this.addChild(quad);
 		}
 		
 		public function moveForward(passedTime:Number = -1):void
@@ -100,13 +95,13 @@ package component
 			var moveX:Number = Math.sin(this.rotation) * distance;
 			var moveY:Number = Math.cos(this.rotation) * distance;
 			this.mapX += moveX;
-			if (moveX > 0) world.cpnMove(this, MoveDirection.RIGHT);
-			else if (moveX < 0) world.cpnMove(this, MoveDirection.LEFT);
+			if (moveX > 0) world.componentMove(this, MoveDirection.RIGHT);
+			else if (moveX < 0) world.componentMove(this, MoveDirection.LEFT);
 			this.mapY -= moveY;
-			if (moveY > 0) world.cpnMove(this, MoveDirection.UP);
-			else if (moveY < 0) world.cpnMove(this, MoveDirection.DOWN);
-			//this.x = this.mapX;
-			//this.y = this.mapY;
+			if (moveY > 0) world.componentMove(this, MoveDirection.UP);
+			else if (moveY < 0) world.componentMove(this, MoveDirection.DOWN);
+			this.x = this.mapX;
+			this.y = this.mapY;
 		}
 		
 		public function moveBack(passedTime:Number = -1):void
@@ -121,13 +116,13 @@ package component
 			var moveX:Number = Math.sin(this.rotation) * distance;
 			var moveY:Number = Math.cos(this.rotation) * distance;
 			this.mapX -= moveX;
-			if (moveX < 0) world.cpnMove(this, MoveDirection.RIGHT);
-			else if (moveX > 0) world.cpnMove(this, MoveDirection.LEFT);
+			if (moveX < 0) world.componentMove(this, MoveDirection.RIGHT);
+			else if (moveX > 0) world.componentMove(this, MoveDirection.LEFT);
 			this.mapY += moveY;
-			if (moveY < 0) world.cpnMove(this, MoveDirection.DOWN);
-			else if (moveY > 0) world.cpnMove(this, MoveDirection.UP);
-			//this.x = this.mapX;
-			//this.y = this.mapY;
+			if (moveY < 0) world.componentMove(this, MoveDirection.UP);
+			else if (moveY > 0) world.componentMove(this, MoveDirection.DOWN);
+			this.x = this.mapX;
+			this.y = this.mapY;
 		}
 		
 		public function turnLeft(passedTime:Number):void
@@ -178,7 +173,7 @@ package component
 			return this.id;
 		}
 		
-		override public function gotoNextFrame(passedTime:Number):void 
+		override public function updateTime(passedTime:Number):void 
 		{
 			if (_isUpPressing) {
 				moveDir = 1;
@@ -250,6 +245,7 @@ package component
 					//this.mapY = this.oldMapY;
 				//}
 			//}
+			quad.rotation = -this.rotation;
 		}
 		
 	}

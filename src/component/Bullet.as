@@ -72,7 +72,7 @@ package component
 			}
 		}
 		
-		override public function gotoNextFrame(passedTime:Number):void {
+		override public function updateTime(passedTime:Number):void {
 			if (passedTime == -1) {
 				var distance:Number = this._speed;
 			} else if (passedTime > 0) {

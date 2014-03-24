@@ -53,8 +53,6 @@ package game
 			AnimationManager.startUp(30);
 		}
 		
-		
-		
 		//private function onLoadComplete(evt:Event):void {
 			//var loaderInfo:LoaderInfo = evt.target as LoaderInfo;
 			//blue_tank_bmd = (loaderInfo.content as Bitmap).bitmapData;

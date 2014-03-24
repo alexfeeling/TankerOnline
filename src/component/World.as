@@ -6,6 +6,8 @@ package component
 	import com.alex.pattern.IOrderExecutor;
 	import controll.Controller;
 	import flash.desktop.InteractiveIcon;
+	import flash.geom.Rectangle;
+	import game.Game;
 	import starling.display.Sprite;
 	import starling.textures.TextureAtlas;
 	import texture.TextureManager;
@@ -24,8 +26,8 @@ package component
 		public static var STAGE_WIDTH:int = 0;
 		public static var STAGE_HEIGHT:int = 0;
 		
-		public static var GRID_WIDTH:int = 100;
-		public static var GRID_HEIGHT:int = 100;
+		public static var GRID_WIDTH:int = 150;
+		public static var GRID_HEIGHT:int = 150;
 		
 		private static const COMMAND_HANDLER_NAME:String = "world";
 		
@@ -47,6 +49,8 @@ package component
 		private var _angleSpeed:Number = 2;
 		
 		private var _allGrids:Dictionary;
+		
+		private var _idxList:Array;
 		
 		public function World() 
 		{
@@ -70,6 +74,11 @@ package component
 			this.touchable = false;
 			_allComponents = new Vector.<BaseComponent>();
 			_allGrids = new Dictionary();
+			_idxList = [];
+			_idxList[MoveDirection.LEFT] = [ -1, 0, -1, -1, -1, 1, 0, -1, 0, 1, 0, 0];
+			_idxList[MoveDirection.RIGHT] = [1, 0, 1, -1, 1, 1, 0, -1, 0, 1, 0, 0];
+			_idxList[MoveDirection.UP] = [0, -1, -1, -1, 1, -1, -1, 0, 1, 0, 0, 0];
+			_idxList[MoveDirection.DOWN] = [0, 1, 1, 1, -1, 1, 1, 0, -1, 0, 0, 0];
 			
 			//this.x = World.STAGE_WIDTH >> 1;
 			//this.y = World.STAGE_HEIGHT - 200;
@@ -204,10 +213,6 @@ package component
 			cpn.y = cpn.mapY;
 		}
 		
-		public function componentMove(cpn:BaseComponent):void {
-			
-		}
-		
 		private var _emptyIdx:Array = [];
 		private var _id:String = "world";
 		public function addComponent(cpn:BaseComponent):Boolean {
@@ -215,17 +220,19 @@ package component
 				cpn.gridX = int(cpn.mapX / GRID_WIDTH);
 				cpn.gridY = int(cpn.mapY / GRID_HEIGHT);
 				var key:String = cpn.gridX + "@" + cpn.gridY;
-				if (_allGrids[key] != null) {
-					return false;
+				var cpnList:Vector.<BaseComponent> = _allGrids[key] as Vector.<BaseComponent>;
+				if (cpnList == null) {
+					cpnList = new Vector.<BaseComponent>();
+					_allGrids[key] = cpnList;
 				}
-				_allGrids[key] = cpn;
+				cpnList.push(cpn);
 			}
-			if (_emptyIdx.length > 0) {
-				_allComponents[_emptyIdx.pop()] = cpn;
-			} else {
-				_allComponents.push(cpn);
-			}
+			if (_emptyIdx.length > 0) _allComponents[_emptyIdx.pop()] = cpn;
+			else _allComponents.push(cpn);
+			cpn.x = cpn.mapX;
+			cpn.y = cpn.mapY;
 			this.addChild(cpn);
+			return true;
 			if (cpn != controllingTank) {
 				var leftCpnLeftBod:BaseComponent = _mostLcpn4Lbod;
 				while (leftCpnLeftBod) {
@@ -305,13 +312,7 @@ package component
 				_mostDcpn4Dbod = controllingTank;
 				_mostUcpn4Ubod = controllingTank;
 			}
-			//var shape:Shape = new Shape();
-			//shape.graphics.beginFill(0xffcc00, 0.5);
-			//shape.graphics.drawRect(-50, -50, GRID_WIDTH, GRID_HEIGHT);
-			//shape.graphics.endFill();
-			//shape.x = cpn.gridX * GRID_WIDTH - controllingTank.mapX;
-			//shape.y = cpn.gridY * GRID_HEIGHT-controllingTank.mapY;
-			//this.addChild(shape);
+			
 			cpn.x = cpn.mapX;
 			cpn.y = cpn.mapY;
 			return true;
@@ -320,11 +321,15 @@ package component
 		public function removeComponent(cpn:BaseComponent):Boolean {
 			if (cpn.solid) {
 				var key:String = cpn.gridX + "@" + cpn.gridY;
-				if (_allGrids[key] == null) {
-					return false;
-				}
-				_allGrids[key] = null;
-				delete _allGrids[key];
+				var cpnList:Vector.<BaseComponent> = _allGrids[key] as Vector.<BaseComponent>;
+				if (cpnList == null) return false;
+				//if (_allGrids[key] == null) {
+					//return false;
+				//}
+				//_allGrids[key] = null;
+				//delete _allGrids[key];
+				idx = cpnList.indexOf(cpn)
+				if (idx >= 0) cpnList.splice(idx, 1);
 			}
 			var idx:int = _allComponents.indexOf(cpn);
 			if (idx >= 0) {
@@ -335,63 +340,71 @@ package component
 			return true;
 		}
 		
-		/*
-		 * public function componentMove(cpn:BaseComponent):BaseComponent {
+		public function componentMove(cpn:BaseComponent, dir:int):BaseComponent {
 			var newGridX:int = int(cpn.mapX / GRID_WIDTH);
 			var newGridY:int = int(cpn.mapY / GRID_HEIGHT);
-			if (cpn.moveDir == 1) {
-				var rot:Number = cpn.rotation * cpn.moveDir;
-			} else if (cpn.moveDir == -1) {
-				rot = cpn.rotation + 180;
-				rot = rot > 180?rot - 360:rot;
-			}
 			
-			if (rot > 0 && rot < 90) {
-				var idxList:Array = [ -1, -1, 0, -1, 1, -1, 1, 0, 1, 1];
-			} else if (rot > 90 && rot < 180) {
-				idxList = [1, -1, 1, 0, 1, 1, 0, 1, -1, 1];
-			} else if (rot < 0 && rot > -90) {
-				idxList = [1, -1, 0, -1, -1, -1, -1, 0, -1, 1];
-			} else if (rot < -90) {
-				idxList = [ -1, -1, -1, 0, -1, 1, 0, 1, 1, 1];
-			} else if (rot == 0) {
-				idxList = [ -1, -1, 0, -1, 1, -1];
-			} else if (rot == 90) {
-				idxList = [1, -1, 1, 0, 1, 1];
-			} else if (rot == 180) {
-				idxList = [ -1, 1, 0, 1, 1, 1];
-			} else {
-				idxList = [ -1, -1, -1, 0, -1, 1];
-			}
-			
-			if (cpn.solid) {
-				idxList.push(0, 0);
-			}
-			
-			for (var i:int = 0; i < idxList.length; i += 2) {
-				var tcpn:BaseComponent = _allGrids[(newGridX + idxList[i]) + "@" + (newGridY + idxList[i + 1])] as BaseComponent;
-				if (tcpn && tcpn != cpn ) {
-					if (tcpn.getBoundRect().intersects(cpn.getBoundRect()))
-						return tcpn;
+			var idxList:Array = _idxList[dir] as Array;
+			var i:int, 
+				j:int, 
+				len:int,
+				len2:int;
+			var cpnList:Vector.<BaseComponent>;
+			var hitRect:Rectangle;
+			for (i = 0, len = idxList.length; i < len; i += 2) {
+				cpnList = _allGrids[(newGridX + idxList[i]) + "@" + (newGridY + idxList[i + 1])] as Vector.<BaseComponent>;
+				if (!cpnList) continue;
+				for (j = 0, len2 = cpnList.length; j < len2; j++) {
+					if (cpnList[j] == null || cpnList[j] == cpn) continue;
+					hitRect = cpnList[j].phyRect.intersection(cpn.phyRect);
+					if (hitRect) {
+						if (cpn.solid && cpnList[j].solid) {
+							switch(dir) {
+								case MoveDirection.LEFT:
+									cpn.mapX += hitRect.width;
+									break;
+								case MoveDirection.RIGHT:
+									cpn.mapX -= hitRect.width;
+									break;
+								case MoveDirection.UP:
+									cpn.mapY += hitRect.height;
+									break;
+								case MoveDirection.DOWN:
+									cpn.mapY -= hitRect.height;
+									break;
+							}
+						} else if (cpnList[j].solid) {
+							//先留着
+						}
+						cpn.hit(cpnList[j]);
+						updateGrid(cpn);
+						len2 = cpnList.length;
+						//return cpnList[j];
+					}
 				}
 			}
-			if (cpn.solid && (newGridX != cpn.gridX || newGridY != cpn.gridY)) {
-				if (_allGrids[newGridX + "@" + newGridY]) {
-					cpn.mapX = cpn.oldMapX;
-					cpn.mapY = cpn.oldMapY;
-					return null;
-				} else {
-					_allGrids[cpn.gridX + "@" + cpn.gridY] = null;
-					_allGrids[newGridX + "@" + newGridY] = cpn;
-				}
-			}
-			cpn.gridX = newGridX;
-			cpn.gridY = newGridY;
-			cpn.oldMapX = cpn.mapX;
-			cpn.oldMapY = cpn.mapY;
+			updateGrid(cpn);
 			return null;
 		}
-		*/
+		
+		public function updateGrid(cpn:BaseComponent):void {
+			var newGridX:int = int(cpn.mapX / GRID_WIDTH);
+			var newGridY:int = int(cpn.mapY / GRID_HEIGHT);
+			if (newGridX == cpn.gridX && newGridY == cpn.gridY) return;
+			var cpnList:Vector.<BaseComponent> = _allGrids[cpn.gridX + "@" + cpn.gridY] as Vector.<BaseComponent>;
+			if (cpnList) {
+				var idx:int = cpnList.indexOf(cpn);
+				if (idx >= 0) {
+					cpnList.splice(idx, 1);
+				}
+			}
+			cpnList = _allGrids[newGridX + "@" + newGridY] as Vector.<BaseComponent>;
+			if (!cpnList) cpnList = new Vector.<BaseComponent>();
+			cpnList.push(cpn);
+			cpn.gridX = newGridX;
+			cpn.gridY = newGridY;
+		}
+		
 		
 		/* INTERFACE com.alex.pattern.IOrderExecutor */
 		
@@ -409,10 +422,12 @@ package component
 					controllingTank.mapX = 500;
 					controllingTank.mapY = 500;
 					this.addComponent(controllingTank);
-					var e1:EnemyTank = new EnemyTank("e1", ttat);
-					e1.mapX = 200;
-					e1.mapY = 200;
-					this.addComponent(e1);
+					for (var i:int = 0; i < 200; i++) {
+						var e1:EnemyTank = new EnemyTank("e" + i, ttat);
+						e1.mapX = STAGE_WIDTH * (2*Math.random()-1);
+						e1.mapY = STAGE_HEIGHT * (2*Math.random()-1);
+						this.addComponent(e1);
+					}
 					break;
 			}
 		}
@@ -434,15 +449,19 @@ package component
 			return false;
 		}
 		
-		public function gotoNextFrame(passedTime:Number):void 
+		public function updateTime(passedTime:Number):void 
 		{
 			for (var i:int = 0; i < _allComponents.length; i++) {
 				if (_allComponents[i] != null) {
-					_allComponents[i].gotoNextFrame(passedTime);
-					if (i > 0 && _allComponents[i]) {//i==0时是controllingTank
+					_allComponents[i].updateTime(passedTime);
+					//if (i > 0 && _allComponents[i]) {//i==0时是controllingTank
 						//_allComponents[i].refreshXY();
-					}
+					//}
 				}
+			}
+			if (controllingTank) {
+				this.x = (STAGE_WIDTH >> 1) - controllingTank.mapX;
+				this.y = (STAGE_HEIGHT >> 1) - controllingTank.mapY;
 			}
 			return;
 			this.rotation = -controllingTank.rotation;

@@ -11,7 +11,7 @@ package com.alex.animation
 		function get id():String;
 		function isPause():Boolean
 		function isPlayEnd():Boolean;
-		function gotoNextFrame(passedTime:Number):void;
+		function updateTime(passedTime:Number):void;
 		
 	}
 	

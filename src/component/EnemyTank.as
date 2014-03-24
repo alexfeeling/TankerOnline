@@ -1,6 +1,7 @@
 package component 
 {
 	import starling.textures.TextureAtlas;
+	import starling.utils.deg2rad;
 	
 	/**
 	 * ...
@@ -27,6 +28,15 @@ package component
 			this.scaleY = 0.5;
 			this._speed = 20;
 			this._turnSpeed = 10;
+			thruster.play();
+		}
+		
+		override public function updateTime(passedTime:Number):void 
+		{
+			weapon.rotation += deg2rad(this._turnSpeed * passedTime / 100);
+			this.rotation += (Math.random() * 2 - 1) * Math.PI/8;
+			this.moveForward(passedTime);
+			quad.rotation = -this.rotation;
 		}
 		
 	}

@@ -30,6 +30,11 @@ package component
 		public var upCpn4DownBd:BaseComponent;
 		public var downCpn4UpBd:BaseComponent;
 		
+		public var cpnL:BaseComponent;
+		public var cpnR:BaseComponent;
+		public var cpnU:BaseComponent;
+		public var cpnD:BaseComponent;
+		
 		public function BaseComponent() 
 		{
 			
@@ -37,6 +42,17 @@ package component
 		
 		public function getBoundRect():Rectangle {
 			return bounds;
+		}
+		
+		
+		private var rect:Rectangle;
+		public function get phyRect():Rectangle {
+			if (!rect) {
+				rect = new Rectangle(0, 0, 100, 100);
+			}
+			rect.x = this.mapX - 50;
+			rect.y = this.mapY - 50;
+			return rect;
 		}
 		
 		/* INTERFACE component.IComponent */
@@ -63,7 +79,7 @@ package component
 			return false;
 		}
 		
-		public function gotoNextFrame(passedTime:Number):void 
+		public function updateTime(passedTime:Number):void 
 		{
 			
 		}
@@ -100,6 +116,10 @@ package component
 		
 		public function hitedBy(bul:BaseComponent):void {
 			trace("be hited by " + bul.id);
+		}
+		
+		public function hit(tcpn:BaseComponent):void {
+			
 		}
 		
 	}
