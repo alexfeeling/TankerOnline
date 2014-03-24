@@ -4,7 +4,7 @@
   <versionNumber>0.2</versionNumber>
   <supportedProfiles>mobileDevice</supportedProfiles>
   <filename>TankerOnline</filename>
-  <name>TankerOnline</name>
+  <name>坦克大战</name>
   <android>
     <manifestAdditions><![CDATA[<manifest android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="8" />

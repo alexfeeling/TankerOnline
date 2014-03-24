@@ -1,0 +1,16 @@
+<TextureAtlas imagePath="robotCar.png">
+  <SubTexture name="img_bottom" x="0" y="0" width="71" height="66"/>
+  <SubTexture name="img_track1" x="143" y="0" width="27" height="79"/>
+  <SubTexture name="img_track10" x="58" y="81" width="27" height="79"/>
+  <SubTexture name="img_track11" x="203" y="81" width="27" height="78"/>
+  <SubTexture name="img_track2" x="29" y="68" width="27" height="79"/>
+  <SubTexture name="img_track3" x="201" y="0" width="27" height="79"/>
+  <SubTexture name="img_track4" x="0" y="68" width="27" height="79"/>
+  <SubTexture name="img_track5" x="174" y="81" width="27" height="78"/>
+  <SubTexture name="img_track6" x="145" y="81" width="27" height="78"/>
+  <SubTexture name="img_track7" x="172" y="0" width="27" height="79"/>
+  <SubTexture name="img_track8" x="87" y="81" width="27" height="79"/>
+  <SubTexture name="img_track9" x="116" y="81" width="27" height="79"/>
+  <SubTexture name="img_trackBot" x="73" y="0" width="39" height="79"/>
+  <SubTexture name="img_trackTop" x="114" y="0" width="27" height="79"/>
+</TextureAtlas>
