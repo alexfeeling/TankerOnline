@@ -81,10 +81,10 @@ package component
 		override public function getBoundRect():Rectangle 
 		{
 			if (!rect) {
-				rect = new Rectangle(0, 0, 200, 200);
+				rect = new Rectangle(0, 0, 100, 100);
 			}
-			rect.x = this.mapX - 100;
-			rect.y = this.mapY - 100;
+			rect.x = this.mapX - 50;
+			rect.y = this.mapY - 50;
 			return rect;
 		}
 		
@@ -100,13 +100,13 @@ package component
 			var moveX:Number = Math.sin(this.rotation) * distance;
 			var moveY:Number = Math.cos(this.rotation) * distance;
 			this.mapX += moveX;
-			this.mapY -= moveY;
 			if (moveX > 0) world.cpnMove(this, MoveDirection.RIGHT);
 			else if (moveX < 0) world.cpnMove(this, MoveDirection.LEFT);
+			this.mapY -= moveY;
 			if (moveY > 0) world.cpnMove(this, MoveDirection.UP);
 			else if (moveY < 0) world.cpnMove(this, MoveDirection.DOWN);
-			this.x = this.mapX;
-			this.y = this.mapY;
+			//this.x = this.mapX;
+			//this.y = this.mapY;
 		}
 		
 		public function moveBack(passedTime:Number = -1):void
@@ -121,13 +121,13 @@ package component
 			var moveX:Number = Math.sin(this.rotation) * distance;
 			var moveY:Number = Math.cos(this.rotation) * distance;
 			this.mapX -= moveX;
-			this.mapY += moveY;
 			if (moveX < 0) world.cpnMove(this, MoveDirection.RIGHT);
 			else if (moveX > 0) world.cpnMove(this, MoveDirection.LEFT);
+			this.mapY += moveY;
 			if (moveY < 0) world.cpnMove(this, MoveDirection.DOWN);
 			else if (moveY > 0) world.cpnMove(this, MoveDirection.UP);
-			this.x = this.mapX;
-			this.y = this.mapY;
+			//this.x = this.mapX;
+			//this.y = this.mapY;
 		}
 		
 		public function turnLeft(passedTime:Number):void

@@ -81,19 +81,19 @@ package component
 				return;
 			}
 			
-			var moveX:Number = Math.sin(this.rotation * Math.PI / 180) * distance;
-			var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
-			this.mapX += moveX;
-			this.mapY -= moveY;
-			if (mapX != oldMapX || mapY != oldMapY) {
-				var hitCpn:BaseComponent = world.componentMove(this);
-				if (hitCpn && hitCpn != this.owner) {
-					this.mapX = this.oldMapX;
-					this.mapY = this.oldMapY;
-					hitCpn.hitedBy(this);
-					world.removeComponent(this);
-				}
-			}
+			//var moveX:Number = Math.sin(this.rotation * Math.PI / 180) * distance;
+			//var moveY:Number = Math.cos(this.rotation * Math.PI / 180) * distance;
+			//this.mapX += moveX;
+			//this.mapY -= moveY;
+			//if (mapX != oldMapX || mapY != oldMapY) {
+				//var hitCpn:BaseComponent = world.componentMove(this);
+				//if (hitCpn && hitCpn != this.owner) {
+					//this.mapX = this.oldMapX;
+					//this.mapY = this.oldMapY;
+					//hitCpn.hitedBy(this);
+					//world.removeComponent(this);
+				//}
+			//}
 			
 		}
 		

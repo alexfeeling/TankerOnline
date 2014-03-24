@@ -34,6 +34,16 @@ package component
 		private var _allComponents:Vector.<BaseComponent>;
 		public var controllingTank:ControlledTank;
 		
+		private var _mostLeftCpn:BaseComponent;
+		private var _mostRightCpn:BaseComponent;
+		private var _mostUpCpn:BaseComponent;
+		private var _mostDownCpn:BaseComponent;
+		
+		private var _mostRcpn4Rbod:BaseComponent;
+		private var _mostLcpn4Lbod:BaseComponent;
+		private var _mostDcpn4Dbod:BaseComponent;
+		private var _mostUcpn4Ubod:BaseComponent;
+		
 		private var _angleSpeed:Number = 2;
 		
 		private var _allGrids:Dictionary;
@@ -46,8 +56,6 @@ package component
 			_instance = this;
 			init();
 			AnimationManager.addToAnimationList(this);
-			//this.cacheAsBitmap = true;
-			//this.cacheAsBitmapMatrix = new Matrix();
 			Commander.registerExecutor(this);
 		}
 		
@@ -62,21 +70,9 @@ package component
 			this.touchable = false;
 			_allComponents = new Vector.<BaseComponent>();
 			_allGrids = new Dictionary();
-			//controllingTank = new ControlledTank("tank_1");
-			//controllingTank.x = 0;
-			//controllingTank.y = 0;
-			//controllingTank.mapX = 400;
-			//controllingTank.mapY = 300;
-			//this.addComponent(controllingTank);
 			
-			this.x = World.STAGE_WIDTH >> 1;
-			this.y = World.STAGE_HEIGHT - 200;
-			
-			//var redTank:RedTank = new RedTank("red");
-			//redTank.mapX = Math.random() * STAGE_WIDTH;
-			//redTank.mapY = Math.random() * STAGE_HEIGHT;
-			//redTank.refreshXY();
-			//this.addComponent(redTank);
+			//this.x = World.STAGE_WIDTH >> 1;
+			//this.y = World.STAGE_HEIGHT - 200;
 			
 		}
 		
@@ -99,10 +95,11 @@ package component
 								veryUpCpn = upCpn.upCpn4DownBd;
 								upCpn.upCpn4DownBd = cpn;
 								cpn.upCpn4DownBd = veryUpCpn;
+								if (cpn == _mostDcpn4Dbod) _mostDcpn4Dbod = upCpn;
 								upCpn = veryUpCpn;
 							} else if (upCpn.getBoundRect().intersects(cpn.getBoundRect())) {
 								//hit
-								cpn.mapY = upCpn.getBoundRect().bottom;
+								cpn.mapY = upCpn.getBoundRect().bottom + (cpn.getBoundRect().height >> 1);
 								break;
 							} else break;
 						} else break;
@@ -113,6 +110,7 @@ package component
 							veryDownCpn = downCpn.downCpn4UpBd;
 							downCpn.downCpn4UpBd = cpn;
 							cpn.downCpn4UpBd = veryDownCpn;
+							if (cpn == _mostUcpn4Ubod) _mostUcpn4Ubod = downCpn;
 							downCpn = veryDownCpn;
 						} else break;
 					}
@@ -126,9 +124,11 @@ package component
 								veryDownCpn = downCpn.downCpn4UpBd;
 								downCpn.downCpn4UpBd = cpn;
 								cpn.downCpn4UpBd = veryDownCpn;
+								if (cpn == _mostUcpn4Ubod) _mostUcpn4Ubod = downCpn;
 								downCpn = veryDownCpn;
-							} else if (downCpn.bounds.intersects(cpn.bounds)) {
-								cpn.mapY = downCpn.bounds.top;
+							} else if (downCpn.getBoundRect().intersects(cpn.getBoundRect())) {
+								cpn.mapY = downCpn.getBoundRect().top - (cpn.getBoundRect().height >> 1);
+								break;
 							} else break;
 						} else break;
 					}
@@ -138,6 +138,7 @@ package component
 							veryUpCpn = upCpn.upCpn4DownBd;
 							upCpn.upCpn4DownBd = cpn;
 							cpn.upCpn4DownBd = veryUpCpn;
+							if (cpn == _mostDcpn4Dbod) _mostDcpn4Dbod = upCpn;
 							upCpn = veryUpCpn;
 						} else break;
 					}
@@ -151,9 +152,11 @@ package component
 								veryLeftCpn = leftCpn.leftCpn4RightBd;
 								leftCpn.leftCpn4RightBd = cpn;
 								cpn.leftCpn4RightBd = veryLeftCpn;
+								if (cpn == _mostRcpn4Rbod) _mostRcpn4Rbod = leftCpn;
 								leftCpn = veryLeftCpn;
 							} else if (leftCpn.getBoundRect().intersects(cpn.getBoundRect())) {
-								cpn.mapX = leftCpn.getBoundRect().right;
+								cpn.mapX = leftCpn.getBoundRect().right + (cpn.getBoundRect().width >> 1);
+								break;
 							} else break;
 						} else break;
 					}
@@ -163,6 +166,7 @@ package component
 							veryRightCpn = rightCpn.rightCpn4LeftBd;
 							rightCpn.rightCpn4LeftBd = cpn;
 							cpn.rightCpn4LeftBd = veryRightCpn;
+							if (cpn == _mostLcpn4Lbod) _mostLcpn4Lbod = cpn;
 							rightCpn = veryRightCpn;
 						} else break;
 					}
@@ -176,9 +180,11 @@ package component
 								veryRightCpn = rightCpn.rightCpn4LeftBd;
 								rightCpn.rightCpn4LeftBd = cpn;
 								cpn.rightCpn4LeftBd = veryRightCpn;
+								if (cpn == _mostLcpn4Lbod) _mostLcpn4Lbod = rightCpn;
 								rightCpn = veryRightCpn;
-							} else if (rightCpn.bounds.intersects(cpn.getBoundRect())) {
-								cpn.mapX = rightCpn.getBoundRect().left;
+							} else if (rightCpn.getBoundRect().intersects(cpn.getBoundRect())) {
+								cpn.mapX = rightCpn.getBoundRect().left - (cpn.getBoundRect().width >> 1);
+								break;
 							} else break;
 						} else break;
 					}
@@ -188,11 +194,18 @@ package component
 							veryLeftCpn = leftCpn.leftCpn4RightBd;
 							leftCpn.leftCpn4RightBd = cpn;
 							cpn.leftCpn4RightBd = veryLeftCpn;
+							if (cpn == _mostRcpn4Rbod) _mostRcpn4Rbod == cpn;
 							leftCpn = veryLeftCpn;
 						} else break;
 					}
 					break;
 			}
+			cpn.x = cpn.mapX;
+			cpn.y = cpn.mapY;
+		}
+		
+		public function componentMove(cpn:BaseComponent):void {
+			
 		}
 		
 		private var _emptyIdx:Array = [];
@@ -213,7 +226,85 @@ package component
 				_allComponents.push(cpn);
 			}
 			this.addChild(cpn);
-			
+			if (cpn != controllingTank) {
+				var leftCpnLeftBod:BaseComponent = _mostLcpn4Lbod;
+				while (leftCpnLeftBod) {
+					if (leftCpnLeftBod.getBoundRect().left < cpn.getBoundRect().left) {
+						if (leftCpnLeftBod.rightCpn4LeftBd == null) {
+							leftCpnLeftBod.rightCpn4LeftBd = cpn;
+						} else if (leftCpnLeftBod.rightCpn4LeftBd.getBoundRect().left > cpn.getBoundRect().left) {
+							cpn.rightCpn4LeftBd = leftCpnLeftBod.rightCpn4LeftBd;
+							leftCpnLeftBod.rightCpn4LeftBd = cpn;
+						} else {
+							leftCpnLeftBod = leftCpnLeftBod.rightCpn4LeftBd;
+							continue;
+						}
+					} else {
+						cpn.rightCpn4LeftBd = leftCpnLeftBod;
+						if (cpn.rightCpn4LeftBd == _mostLcpn4Lbod) _mostLcpn4Lbod = cpn;
+					}
+					break;
+				}
+				var rightCpnRightBod:BaseComponent = _mostRcpn4Rbod;
+				while (rightCpnRightBod) {
+					if (rightCpnRightBod.getBoundRect().right > cpn.getBoundRect().right) {
+						if (rightCpnRightBod.leftCpn4RightBd == null) {
+							rightCpnRightBod.leftCpn4RightBd = cpn;
+						} else if (rightCpnRightBod.leftCpn4RightBd.getBoundRect().right < cpn.getBoundRect().right) {
+							cpn.leftCpn4RightBd = rightCpnRightBod.leftCpn4RightBd;
+							rightCpnRightBod.leftCpn4RightBd = cpn;
+						} else {
+							rightCpnRightBod = rightCpnRightBod.leftCpn4RightBd;
+							continue;
+						}
+					} else {
+						cpn.leftCpn4RightBd = rightCpnRightBod;
+						if (cpn.leftCpn4RightBd == _mostRcpn4Rbod) _mostRcpn4Rbod = cpn;
+					}
+					break;
+				}
+				var upCpnUpBod:BaseComponent = _mostUcpn4Ubod;
+				while (upCpnUpBod) {
+					if (upCpnUpBod.getBoundRect().top < cpn.getBoundRect().top) {
+						if (upCpnUpBod.downCpn4UpBd == null) {
+							upCpnUpBod.downCpn4UpBd = cpn;
+						} else if (upCpnUpBod.downCpn4UpBd.getBoundRect().top < cpn.getBoundRect().top) {
+							cpn.downCpn4UpBd = upCpnUpBod.downCpn4UpBd;
+							upCpnUpBod.downCpn4UpBd = cpn;
+						} else {
+							upCpnUpBod = upCpnUpBod.downCpn4UpBd;
+							continue;
+						}
+					} else {
+						cpn.downCpn4UpBd = upCpnUpBod;
+						if (cpn.downCpn4UpBd == _mostUcpn4Ubod) _mostUcpn4Ubod = cpn;
+					}
+					break;
+				}
+				var downCpnDownBod:BaseComponent = _mostDcpn4Dbod;
+				while (downCpnDownBod) {
+					if (downCpnDownBod.getBoundRect().bottom > cpn.getBoundRect().bottom) {
+						if (downCpnDownBod.upCpn4DownBd == null) {
+							downCpnDownBod.upCpn4DownBd = cpn;
+						} else if (downCpnDownBod.upCpn4DownBd.getBoundRect().bottom > cpn.getBoundRect().bottom) {
+							cpn.upCpn4DownBd = downCpnDownBod.upCpn4DownBd;
+							downCpnDownBod.upCpn4DownBd = cpn;
+						} else {
+							downCpnDownBod = downCpnDownBod.upCpn4DownBd;
+							continue;
+						}
+					} else {
+						cpn.upCpn4DownBd = downCpnDownBod;
+						if (cpn.upCpn4DownBd == _mostDcpn4Dbod) _mostDcpn4Dbod = cpn;
+					}
+					break;
+				}
+			} else {
+				_mostRcpn4Rbod = controllingTank;
+				_mostLcpn4Lbod = controllingTank;
+				_mostDcpn4Dbod = controllingTank;
+				_mostUcpn4Ubod = controllingTank;
+			}
 			//var shape:Shape = new Shape();
 			//shape.graphics.beginFill(0xffcc00, 0.5);
 			//shape.graphics.drawRect(-50, -50, GRID_WIDTH, GRID_HEIGHT);
@@ -221,6 +312,8 @@ package component
 			//shape.x = cpn.gridX * GRID_WIDTH - controllingTank.mapX;
 			//shape.y = cpn.gridY * GRID_HEIGHT-controllingTank.mapY;
 			//this.addChild(shape);
+			cpn.x = cpn.mapX;
+			cpn.y = cpn.mapY;
 			return true;
 		}
 		
@@ -242,7 +335,8 @@ package component
 			return true;
 		}
 		
-		public function componentMove(cpn:BaseComponent):BaseComponent {
+		/*
+		 * public function componentMove(cpn:BaseComponent):BaseComponent {
 			var newGridX:int = int(cpn.mapX / GRID_WIDTH);
 			var newGridY:int = int(cpn.mapY / GRID_HEIGHT);
 			if (cpn.moveDir == 1) {
@@ -297,6 +391,7 @@ package component
 			cpn.oldMapY = cpn.mapY;
 			return null;
 		}
+		*/
 		
 		/* INTERFACE com.alex.pattern.IOrderExecutor */
 		
@@ -311,7 +406,13 @@ package component
 				case OrderConst.ALL_LOAD_COMPLETE:
 					var ttat:TextureAtlas = TextureManager.getTexture("tank_1");
 					controllingTank = new ControlledTank("tank_1", ttat);
+					controllingTank.mapX = 500;
+					controllingTank.mapY = 500;
 					this.addComponent(controllingTank);
+					var e1:EnemyTank = new EnemyTank("e1", ttat);
+					e1.mapX = 200;
+					e1.mapY = 200;
+					this.addComponent(e1);
 					break;
 			}
 		}
